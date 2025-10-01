@@ -1,9 +1,10 @@
 // Frontend/src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./index.css"; // Make sure this import exists
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import "./index.css";
 import Navbar from "./components/Navbar";
+import AuthNavbar from "./components/NavbarLogin";
 import Home from "./Pages/home";
 import Login from "./Pages/login";
 import Signup from "./Pages/signup";
@@ -14,19 +15,25 @@ import Details from "./Pages/details";
 import GetStart from "./Pages/getstart";
 
 function Layout() {
+  const location = useLocation();
+
+  // Define routes that should use AuthNavbar
+  const authRoutes = ["/login", "/signup", "/"];
+  const isAuthPage = authRoutes.includes(location.pathname);
+
   return (
     <>
-      <Navbar />
+      {isAuthPage ? <AuthNavbar /> : <Navbar />}
       <div className="min-h-screen bg-gray-50">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<GetStart />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/result" element={<Result />} />
           <Route path="/details" element={<Details />} />
-          <Route path="/getstart" element={<GetStart />} />
         </Routes>
       </div>
     </>
