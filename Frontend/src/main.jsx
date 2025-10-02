@@ -21,9 +21,13 @@ function Layout() {
   const authRoutes = ["/login", "/signup", "/"];
   const isAuthPage = authRoutes.includes(location.pathname);
 
+  // Hide navbar for interview page
+  const hideNavbarRoutes = ["/interview"];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
+
   return (
     <>
-      {isAuthPage ? <AuthNavbar /> : <Navbar />}
+      {!shouldHideNavbar && (isAuthPage ? <AuthNavbar /> : <Navbar />)}
       <div className="min-h-screen bg-gray-50">
         <Routes>
           <Route path="/" element={<GetStart />} />

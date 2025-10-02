@@ -7,8 +7,8 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: "/", label: "Home", icon: <FiHome /> },
-    { path: "/interview", label: "Start Interview", icon: <FiMic /> },
+    { path: "/home", label: "Home", icon: <FiHome /> },
+    { path: "/details", label: "Start Interview", icon: <FiMic /> },
     { path: "/profile", label: "Profile", icon: <FiUser /> },
   ];
 
