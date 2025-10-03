@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   FaUser, 
   FaEnvelope, 
@@ -16,6 +16,8 @@ import {
 } from 'react-icons/fa';
 
 function Signup() {
+  const navigate = useNavigate(); // ✅ moved inside component
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,12 +41,36 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        alert("Signup successful! Redirecting to login...");
+        navigate("/login"); // ✅ redirect
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("An error occurred during signup");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">

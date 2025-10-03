@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   FaEnvelope, 
   FaLock, 
@@ -13,6 +13,8 @@ import {
 } from 'react-icons/fa';
 
 function Login() {
+  const navigate = useNavigate(); // ✅ move inside component
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -35,15 +37,33 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      setIsLoading(false);
-    }, 1500);
-  };
 
-  const handleGoogleLogin = () => {
-    console.log('Google OAuth login');
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        console.log('Login successful:', data);
+        navigate('/home'); // ✅ redirects to Home page
+      } else {
+        alert(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred during login');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -245,7 +265,7 @@ function Login() {
               </div>
 
               {/* Google OAuth Button */}
-              <div>
+              {/* <div>
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
@@ -254,7 +274,7 @@ function Login() {
                   <FaGoogle className="w-4.5 h-4.5 text-red-500 mr-2.5" />
                   Continue with Google
                 </button>
-              </div>
+              </div> */}
 
               {/* Signup Link */}
               <div className="text-center">
